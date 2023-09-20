@@ -50,14 +50,16 @@ setup(
     ),
     python_requires=">=3.7",
     install_requires=[
-        "transformers>=4.11.3",
-        "timm",
+        "transformers==4.25.1",
+        "timm==0.5.4",
         "datasets[vision]",
-        "pytorch-lightning>=1.6.4",
+        "pytorch-lightning==1.6.4",
         "nltk",
         "sentencepiece",
         "zss",
         "sconf>=0.2.3",
+        "onnx==1.14.1",
+        "onnxruntime==1.15.1"
     ],
     classifiers=[
         "Intended Audience :: Developers",
