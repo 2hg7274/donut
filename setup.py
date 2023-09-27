@@ -58,7 +58,7 @@ setup(
         "sentencepiece",
         "zss",
         "sconf>=0.2.3",
-        "onnx==1.14.1",
+        "onnx",
         "onnxruntime==1.15.1"
     ],
     classifiers=[
