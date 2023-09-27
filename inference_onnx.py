@@ -143,8 +143,8 @@ def inference_onnx(path, donut_model_path, image_path, prompt):
 
     
     start_prompt = f'<s_{prompt}>'
-    start_prompt_ids = np.array([[add_tokens_json[start_prompt]]]).astype(np.int64)
-    start_prompt_attention_mask = np.array([[1]]).astype(np.int64)
+    start_prompt_ids = np.array([[add_tokens_json[start_prompt]]]).astype(np.int32)
+    start_prompt_attention_mask = np.array([[1]]).astype(np.int32)
 
     res = []
     for i in range(config['max_length']):
@@ -168,7 +168,7 @@ def inference_onnx(path, donut_model_path, image_path, prompt):
             res.append(generated_text)
         
         else:
-            attention_mask = np.array([[1 for _ in range(i+1)]]).astype(np.int64)
+            attention_mask = np.array([[1 for _ in range(i+1)]]).astype(np.int32)
             decoder_inputs = {
                 "input_ids": np.array([[top_token[0]]]),
                 "attention_mask": attention_mask,
@@ -178,8 +178,8 @@ def inference_onnx(path, donut_model_path, image_path, prompt):
 
             input_names = [x.name for x in decoder_sess2.get_inputs()]
             inputs = [
-                np.array([[top_token[0]]]).astype(np.int64),
-                np.array(attention_mask).astype(np.int64)] + [tensor.numpy() for tensor in flat_past_key_values]
+                np.array([[top_token[0]]]).astype(np.int32),
+                np.array(attention_mask).astype(np.int32)] + [tensor.numpy() for tensor in flat_past_key_values]
             decoder_inputs = dict(zip(input_names, inputs))
 
             decoder_output_logits2 = decoder_sess2.run(None, decoder_inputs)

@@ -104,7 +104,7 @@ def generate_onnx(model, save_path, config_path):
             encoder_dummy_inputs,
             os.path.join(save_path,'onnx','encoder.onnx'),
             export_params=True,
-            opset_version=12,
+            opset_version=13,
             do_constant_folding=True,
             input_names=["image"],
             output_names=["hidden_states"],
@@ -130,16 +130,16 @@ def generate_onnx(model, save_path, config_path):
     tokenizer = Donut_decoder.tokenizer
     sample_input = "<s><s_2023_07_21>"
     model_inputs = tokenizer(sample_input, add_special_tokens=False, return_tensors='pt')
-    input_ids = model_inputs['input_ids']
-    attention_mask = model_inputs['attention_mask']
+    input_ids = model_inputs['input_ids'].type(torch.int32)
+    attention_mask = model_inputs['attention_mask'].type(torch.int32)
 
     n_heads = decoder_model_config.decoder_attention_heads
     seqence_length_a = input_ids.shape[0]
     seqence_length_b = encoder_output[0].shape[1] 
     d_kv = decoder_model_config.d_model // n_heads
 
-    input_ids_dec = torch.ones((1,1), dtype=torch.int64)
-    attention_mask_dec = torch.ones((1,seqence_length_a), dtype=torch.int64)
+    input_ids_dec = torch.ones((1,1), dtype=torch.int32)
+    attention_mask_dec = torch.ones((1,seqence_length_a), dtype=torch.int32)
     enc_out = torch.ones(
         (1, seqence_length_b, decoder_model_config.d_model), dtype=torch.float32)
     sa = torch.ones(
@@ -190,7 +190,7 @@ def generate_onnx(model, save_path, config_path):
             os.path.join(save_path, 'onnx', 'decoder_with_past.onnx'),
             export_params=True,
             do_constant_folding=False,
-            opset_version=12,
+            opset_version=13,
             input_names=decoder_input_names,
             output_names=decoder_output_names,
             dynamic_axes=dyn_axis_params
@@ -204,7 +204,7 @@ def generate_onnx(model, save_path, config_path):
             os.path.join(save_path, 'onnx', 'decoder.onnx'),
             export_params=True,
             do_constant_folding=False,
-            opset_version=12,
+            opset_version=13,
             input_names=[
                 "input_ids",
                 "attention_mask",
